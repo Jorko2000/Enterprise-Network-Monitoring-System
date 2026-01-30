@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
 import { io } from "socket.io-client";
+import IncidentCard from "../components/IncidentCard";
+
 
 export default function Dashboard() {
   const [incidents, setIncidents] = useState([]);
@@ -18,13 +20,28 @@ export default function Dashboard() {
     return () => socket.disconnect();
   }, []);
 
-  return (
-    <div>
-      <h1>Incident Dashboard</h1>
-      <h2>Systems</h2>
-      {systems.map(s => <div key={s.id}>{s.name}: {s.status} ({s.responseTime}ms)</div>)}
-      <h2>Incidents</h2>
-      {incidents.map(i => <div key={i._id}>{i.title} - {i.status}</div>)}
-    </div>
-  );
+ return (
+  <div>
+    <h1>Incident Dashboard</h1>
+
+    <h2>Systems</h2>
+    {systems.map(s => (
+      <div key={s._id}>
+        {s.name}: {s.status} ({s.responseTime}ms)
+      </div>
+    ))}
+
+    <h2>Incidents</h2>
+
+    {incidents.length === 0 && <p>No incidents reported.</p>}
+
+    {incidents.map(incident => (
+      <IncidentCard
+        key={incident._id}
+        incident={incident}
+      />
+    ))}
+  </div>
+);
+
 }
